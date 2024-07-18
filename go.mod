@@ -1,6 +1,6 @@
-module github.com/ydarias/xk6-nats
+module github.com/LoyaltyNZ/xk6-nats
 
-go 1.19
+go 1.22
 
 require (
 	github.com/dop251/goja v0.0.0-20230828202809-3dbe69dd2b8e

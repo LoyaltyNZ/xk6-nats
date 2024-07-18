@@ -31,12 +31,13 @@ go install go.k6.io/xk6/cmd/xk6@latest
 
 2. Build the binary:
 ```shell
-xk6 build --with github.com/ydarias/xk6-nats@latest
+xk6 build --with github.com/LoyaltyNZ/xk6-nats@latest
 ```
 
 3. Run a test
 
 ```shell
+docker run --rm --name nats-server -p 4222:4222 -p 8222:8222 -p 6222:6222 nats
 k6 run -e NATS_HOSTNAME=localhost test/test.js
 ```
 
