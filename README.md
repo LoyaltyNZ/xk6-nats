@@ -44,7 +44,7 @@ docker run --rm --name nats-server -p 4222:4222 -p 8222:8222 -p 6222:6222 nats
 To run JetStream test, make sure NATS JetStream is started, e.g. `nats-server -js`
 
 ```shell
-k6 run -e NATS_HOSTNAME=localhost test/test_jetstream.js
+./k6 run -e NATS_HOSTNAME=localhost test/test_jetstream.js
 ```
 
 To run publish with headers test, make sure NATS JetStream is started, e.g. `nats-server -js`
@@ -61,9 +61,10 @@ A Nats instance represents the connection with the NATS server, and it is create
 
 | Attribute | Description |
 | --- | --- |
-| `servers` | (mandatory) is the list of servers where NATS is available (e.g. `[nats://localhost:4222]`) |
-| `unsafe` | (optional) allows running with self-signed certificates when doing tests against a testing environment, it is a boolean value (default value is `false`) |
+| `url` | Optional URL to NATS server (e.g. `[tls://connect.ngs.global`) |
+| `creds_path` | Optional path to credentials file `/path/to/my.creds` used to connect to the NATS server |
 | `token` | (optional) is the value of the token used to connect to the NATS server |
+| `timeout` | (optional) timeout for NATS interactions eg: `5s` is 5 seconds  |
 
 Example:
 
@@ -71,8 +72,8 @@ Example:
 import {Nats} from 'k6/x/nats'
 
 const natsConfig = {
-    servers: ['nats://localhost:4222'],
-    unsafe: true,
+    url: 'tls://connect.ngs.global',
+    creds_path: '/path/to/my-user.creds',
 }
 
 const nats = new Nats(natsConfig)
