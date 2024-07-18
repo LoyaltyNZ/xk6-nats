@@ -38,7 +38,7 @@ xk6 build --with github.com/LoyaltyNZ/xk6-nats@latest
 
 ```shell
 docker run --rm --name nats-server -p 4222:4222 -p 8222:8222 -p 6222:6222 nats
-k6 run -e NATS_HOSTNAME=localhost test/test.js
+./k6 run -e NATS_HOSTNAME=localhost test/test.js
 ```
 
 To run JetStream test, make sure NATS JetStream is started, e.g. `nats-server -js`

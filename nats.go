@@ -1,7 +1,6 @@
 package nats
 
 import (
-	"crypto/tls"
 	"fmt"
 	"time"
 
@@ -62,18 +61,22 @@ func (n *Nats) client(c goja.ConstructorCall) *goja.Object {
 		common.Throw(rt, fmt.Errorf("Nats constructor expect Configuration as it's argument: %w", err))
 	}
 
-	natsOptions := natsio.GetDefaultOptions()
-	natsOptions.Servers = cfg.Servers
-	if cfg.Unsafe {
-		natsOptions.TLSConfig = &tls.Config{
-			InsecureSkipVerify: true,
-		}
+	options := []natsio.Option{}
+	if cfg.CredsPath != "" {
+		options = append(options, natsio.UserCredentials(cfg.CredsPath))
 	}
 	if cfg.Token != "" {
-		natsOptions.Token = cfg.Token
+		options = append(options, natsio.Token(cfg.Token))
+	}
+	if cfg.Timeout != "" {
+		d, err := time.ParseDuration(cfg.Timeout)
+		if err != nil {
+			common.Throw(rt, fmt.Errorf("Nats constructor expect valid timeout duration: %w", err))
+		}
+		options = append(options, natsio.Timeout(d))
 	}
 
-	conn, err := natsOptions.Connect()
+	conn, err := natsio.Connect(cfg.URL, options...)
 	if err != nil {
 		common.Throw(rt, err)
 	}
@@ -343,9 +346,10 @@ func (n *Nats) Request(subject, data string, headers map[string]string) (Message
 }
 
 type Configuration struct {
-	Servers []string
-	Unsafe  bool
-	Token   string
+	URL       string
+	CredsPath string
+	Token     string
+	Timeout   string // Duration string eg: '5s' == 5 seconds
 }
 
 type Message struct {
